@@ -1,7 +1,7 @@
 
 <table>
 <tr>
-<td>
+<td width="340">
 
 <img src="assets/ascii.png" width="320"/>
 
@@ -10,20 +10,16 @@
 
 ### LOGHAMITHRA N
 
-- Age: 20
-- OS: Debian 12 / Linux
-- IDE: VS Code  
+```bash
+OS: Linux
+Age: 20
+IDE: Visual Studio Code
 
----
+GitHub Followers: 0
+GitHub Repos: 18
+LeetCode Solved: 184
 
-**GitHub**
-- Followers: 0
-- Repos: 18
-
-**LeetCode**
-- Solved: 184
-
-_Last updated: 23-02-2026_
+Last Updated: 23-02-2026 10:12:29 PM
 
 </td>
 </tr>

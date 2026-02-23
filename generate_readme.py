@@ -1,5 +1,7 @@
+# generate_readme.py
+
 import requests
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from PIL import Image, ImageDraw, ImageFont
 
 # =====================================
@@ -13,32 +15,51 @@ IMAGE_PATH = "assets/profile.jpg"
 OUTPUT_IMAGE = "assets/ascii.png"
 
 ASCII_WIDTH = 80
-ASCII_CHARS = "@%#*+=-:. "
+
+ASCII_CHARS = """$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|)(1}{][?-_+~><i!lI;:,",^`'. """
 
 # =====================================
 # IMAGE → COLORED ASCII PNG
 # =====================================
 def generate_ascii_image():
-    img = Image.open(IMAGE_PATH)
-    img = img.resize((ASCII_WIDTH, int(ASCII_WIDTH * img.height / img.width * 0.55)))
+    try:
+        img = Image.open(IMAGE_PATH).convert("RGB")
+    except Exception as e:
+        print(f"❌ Failed to open image: {e}")
+        return
+
+    # maintain aspect ratio (terminal correction)
+    new_height = int(ASCII_WIDTH * img.height / img.width * 0.55)
+    img = img.resize((ASCII_WIDTH, new_height))
 
     width, height = img.size
-    pixels = img.load()
 
     font_size = 10
     font = ImageFont.load_default()
 
-    output_img = Image.new("RGB", (width * font_size, height * font_size), "black")
+    output_img = Image.new(
+        "RGB",
+        (width * font_size, height * font_size),
+        "black",
+    )
     draw = ImageDraw.Draw(output_img)
 
     for y in range(height):
         for x in range(width):
             r, g, b = img.getpixel((x, y))
-            gray = int((r + g + b) / 3)
-            char = ASCII_CHARS[gray * len(ASCII_CHARS) // 256]
-            draw.text((x * font_size, y * font_size), char, fill=(r, g, b), font=font)
+            gray = int(0.299 * r + 0.587 * g + 0.114 * b)
+            char = ASCII_CHARS[gray * (len(ASCII_CHARS) - 1) // 255]
+
+            draw.text(
+                (x * font_size, y * font_size),
+                char,
+                fill=(r, g, b),
+                font=font,
+            )
 
     output_img.save(OUTPUT_IMAGE)
+    print("✅ ASCII image generated.")
+
 
 # =====================================
 # AGE
@@ -48,6 +69,7 @@ def calculate_age():
     return today.year - BIRTHDATE.year - (
         (today.month, today.day) < (BIRTHDATE.month, BIRTHDATE.day)
     )
+
 
 # =====================================
 # GITHUB
@@ -62,9 +84,11 @@ def get_github_stats():
         return {
             "repos": user.get("public_repos", 0),
             "followers": user.get("followers", 0),
+            "following": user.get("following", 0),
         }
-    except:
-        return {"repos": "N/A", "followers": "N/A"}
+    except Exception:
+        return {"repos": "N/A", "followers": "N/A", "following": "N/A"}
+
 
 # =====================================
 # LEETCODE
@@ -86,25 +110,33 @@ def get_leetcode_stats():
         response = requests.post(
             "https://leetcode.com/graphql",
             json={"query": query, "variables": {"username": LEETCODE_USERNAME}},
+            timeout=15,
         )
+
         data = response.json()
-        return sum(x["count"] for x in data["data"]["matchedUser"]["submitStats"]["acSubmissionNum"])
-    except:
+        return sum(
+            x["count"]
+            for x in data["data"]["matchedUser"]["submitStats"]["acSubmissionNum"]
+        )
+    except Exception:
         return "N/A"
 
+
 # =====================================
-# README
+# README GENERATOR (COMPACT STYLE)
 # =====================================
 def generate_readme():
     age = calculate_age()
     gh = get_github_stats()
     lc = get_leetcode_stats()
-    last_updated = datetime.now().strftime("%d-%m-%Y")
+
+    ist = timezone(timedelta(hours=5, minutes=30))
+    last_updated = datetime.now(ist).strftime("%d-%m-%Y %I:%M:%S %p")
 
     return f"""
 <table>
 <tr>
-<td>
+<td width="340">
 
 <img src="assets/ascii.png" width="320"/>
 
@@ -113,20 +145,16 @@ def generate_readme():
 
 ### LOGHAMITHRA N
 
-- Age: {age}
-- OS: Debian 12 / Linux
-- IDE: VS Code  
+```bash
+OS: Linux
+Age: {age}
+IDE: Visual Studio Code
 
----
+GitHub Followers: {gh['followers']}
+GitHub Repos: {gh['repos']}
+LeetCode Solved: {lc}
 
-**GitHub**
-- Followers: {gh['followers']}
-- Repos: {gh['repos']}
-
-**LeetCode**
-- Solved: {lc}
-
-_Last updated: {last_updated}_
+Last Updated: {last_updated}
 
 </td>
 </tr>
