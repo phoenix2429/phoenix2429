@@ -1,3 +1,4 @@
+
 <img src="assets/profile.jpg" width="200px" align="right">
 
 # LOGHAMITHRA N
@@ -30,3 +31,15 @@ GitHub Public Repos: 18
 LeetCode Solves: 92
 Last Updated: 23-02-2026 08:37:23 PM
 
+- 👋 Hi, I’m @phoenix2429
+- 👀 I’m interested in sketching and tech stuffs
+- 🌱 I’m currently learning DSA, web developement and many more...
+- 💞️ I’m looking to collaborate on machine learning
+- 📫 How to reach me @loghamithra345@gmail.com
+- 😄 Pronouns: logha-mithra
+- ⚡ Fun fact: i hate talking, only texting.....
+
+<!---
+phoenix2429/phoenix2429 is a ✨ special ✨ repository because its `README.md`  appears on your GitHub profile.
+
+--->
