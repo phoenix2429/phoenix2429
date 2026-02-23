@@ -150,15 +150,26 @@ OS: Linux
 Age: {age}
 IDE: Visual Studio Code
 
+Languages.Programming: Python, C, Java, Go
+Languages.Web: HTML, CSS, JavaScript, React
+Languages.Real: English, Kannada, Hindi, Tamil
+
+Networking: TCP/IP, DNS, DHCP, VLAN
+Security: TLS, VPN, IPsec
+Tools: Git, VS Code, Wireshark
+
+Contacts
+📧 loghamithra345@gmail.com
+💼 https://linkedin.com/in/loghamithra240825
+💻 https://github.com/phoenix2429
+
+Live Stats
 GitHub Followers: {gh['followers']}
 GitHub Repos: {gh['repos']}
+GitHub Public Repos: {gh['repos']}
 LeetCode Solved: {lc}
-
 Last Updated: {last_updated}
 
-</td>
-</tr>
-</table>
 """
 
 # =====================================
