@@ -1,13 +1,12 @@
 import requests
 from datetime import datetime
-from bs4 import BeautifulSoup
+
 
 # =====================================
 # CONFIG — EDIT ONLY IF USERNAMES CHANGE
 # =====================================
 GITHUB_USERNAME = "phoenix2429"
 LEETCODE_USERNAME = "canarycode"
-GFG_USERNAME = "loghamitowyq"
 BIRTHDATE = datetime(2005, 8, 24)
 
 # =====================================
@@ -68,27 +67,20 @@ def get_leetcode_stats():
         return total_solved
     except Exception:
         return "N/A"
-
 # =====================================
-# GEEKSFORGEEKS DATA (SCRAPING)
+# ASCII ART - REPLACE THIS WITH YOUR GENERATED ART
 # =====================================
-def get_gfg_stats():
-    try:
-        url = f"https://www.geeksforgeeks.org/user/{GFG_USERNAME}"
-        response = requests.get(url, timeout=10)
-        soup = BeautifulSoup(response.text, "html.parser")
-        
-        solved = soup.find("div", class_="score_card_value")
-        if not solved:
-            solved = soup.find("span", class_="score_card_value")
-        if not solved:
-            solved = soup.find("div", class_="problemNavbarHead_profile_score")
-            
-        if solved:
-            return solved.text.strip()
-        return "N/A"
-    except Exception:
-        return "N/A"
+ASCII_ART = """
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  @
+@  @                                                                        @  @
+@  @                   YOUR ASCII ART GOES HERE                             @  @
+@  @                                                                        @  @
+@  @   RUN ascii_converter.py TO GENERATE YOUR PROFILE PICTURE AS ASCII     @  @
+@  @                                                                        @  @
+@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+"""
 
 # =====================================
 # README GENERATOR
@@ -97,10 +89,10 @@ def generate_readme():
     age = calculate_age()
     gh = get_github_stats()
     lc = get_leetcode_stats()
-    gfg = get_gfg_stats()
     last_updated = datetime.now().strftime("%d-%m-%Y %I:%M:%S %p")
 
-    content = f"""<img src="assets/profile.jpg" width="150px" align="left">
+    content = f"""
+    {ASCII_ART}
 
 # LOGHAMITHRA N
 
@@ -132,7 +124,6 @@ Live Stats
 - GitHub Following: ......{gh['following']}
 - GitHub Public Repos: ......{gh['repos']}
 - LeetCode Solves: ......{lc}
-- GeeksforGeeks Score: ......{gfg}
 - Last Updated: ......{last_updated}
 
 """
