@@ -1,31 +1,56 @@
 import requests
 from datetime import datetime
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 # =====================================
-# CONFIG — EDIT ONLY IF USERNAMES CHANGE
+# CONFIG
 # =====================================
 GITHUB_USERNAME = "phoenix2429"
 LEETCODE_USERNAME = "canarycode"
 BIRTHDATE = datetime(2005, 8, 24)
 
 IMAGE_PATH = "assets/profile.jpg"
-ASCII_WIDTH = 70
+OUTPUT_IMAGE = "assets/ascii.png"
 
+ASCII_WIDTH = 80
 ASCII_CHARS = "@%#*+=-:. "
 
 # =====================================
-# AGE CALCULATION
+# IMAGE → COLORED ASCII PNG
+# =====================================
+def generate_ascii_image():
+    img = Image.open(IMAGE_PATH)
+    img = img.resize((ASCII_WIDTH, int(ASCII_WIDTH * img.height / img.width * 0.55)))
+
+    width, height = img.size
+    pixels = img.load()
+
+    font_size = 10
+    font = ImageFont.load_default()
+
+    output_img = Image.new("RGB", (width * font_size, height * font_size), "black")
+    draw = ImageDraw.Draw(output_img)
+
+    for y in range(height):
+        for x in range(width):
+            r, g, b = img.getpixel((x, y))
+            gray = int((r + g + b) / 3)
+            char = ASCII_CHARS[gray * len(ASCII_CHARS) // 256]
+            draw.text((x * font_size, y * font_size), char, fill=(r, g, b), font=font)
+
+    output_img.save(OUTPUT_IMAGE)
+
+# =====================================
+# AGE
 # =====================================
 def calculate_age():
     today = datetime.now()
-    age = today.year - BIRTHDATE.year - (
+    return today.year - BIRTHDATE.year - (
         (today.month, today.day) < (BIRTHDATE.month, BIRTHDATE.day)
     )
-    return age
 
 # =====================================
-# GITHUB DATA
+# GITHUB
 # =====================================
 def get_github_stats():
     try:
@@ -37,13 +62,12 @@ def get_github_stats():
         return {
             "repos": user.get("public_repos", 0),
             "followers": user.get("followers", 0),
-            "following": user.get("following", 0),
         }
-    except Exception:
-        return {"repos": "N/A", "followers": "N/A", "following": "N/A"}
+    except:
+        return {"repos": "N/A", "followers": "N/A"}
 
 # =====================================
-# LEETCODE DATA
+# LEETCODE
 # =====================================
 def get_leetcode_stats():
     query = """
@@ -51,7 +75,6 @@ def get_leetcode_stats():
       matchedUser(username: $username) {
         submitStats: submitStatsGlobal {
           acSubmissionNum {
-            difficulty
             count
           }
         }
@@ -63,96 +86,61 @@ def get_leetcode_stats():
         response = requests.post(
             "https://leetcode.com/graphql",
             json={"query": query, "variables": {"username": LEETCODE_USERNAME}},
-            timeout=15,
         )
-
         data = response.json()
-        submissions = data["data"]["matchedUser"]["submitStats"]["acSubmissionNum"]
-        total_solved = sum(item["count"] for item in submissions)
-        return total_solved
-    except Exception:
+        return sum(x["count"] for x in data["data"]["matchedUser"]["submitStats"]["acSubmissionNum"])
+    except:
         return "N/A"
 
 # =====================================
-# IMAGE → ASCII
-# =====================================
-def image_to_ascii(path, width=70):
-    try:
-        img = Image.open(path).convert("L")
-
-        # maintain aspect ratio
-        aspect_ratio = img.height / img.width
-        height = int(width * aspect_ratio * 0.55)
-
-        img = img.resize((width, height))
-
-        pixels = img.getdata()
-        chars = "".join(
-            ASCII_CHARS[pixel * len(ASCII_CHARS) // 256]
-            for pixel in pixels
-        )
-
-        ascii_image = "\n".join(
-            chars[i:i + width] for i in range(0, len(chars), width)
-        )
-
-        return ascii_image
-    except Exception as e:
-        return f"ASCII generation failed: {e}"
-
-# =====================================
-# README GENERATOR
+# README
 # =====================================
 def generate_readme():
     age = calculate_age()
     gh = get_github_stats()
     lc = get_leetcode_stats()
-    ascii_art = image_to_ascii(IMAGE_PATH, ASCII_WIDTH)
-    last_updated = datetime.now().strftime("%d-%m-%Y %I:%M:%S %p")
+    last_updated = datetime.now().strftime("%d-%m-%Y")
 
-    content = f"""# LOGHAMITHRA N
+    return f"""
+<table>
+<tr>
+<td>
 
-<pre>
-{ascii_art}
-</pre>
+<img src="assets/ascii.png" width="320"/>
 
-- OS: ......Debian 12, Android, Linux
-- Age: ......{age} years
-- IDE: ......Visual Studio Code
+</td>
+<td>
 
-- Languages.Programming: ......Python, C, Java, Go
-- Languages.Web: ......HTML, CSS, JavaScript, React
-- Languages.Real: ......English, Kannada, Hindi, Tamil
+### LOGHAMITHRA N
 
-- Networking: ......TCP/IP, DNS, DHCP, VLAN
-- Security: ......TLS, VPN, IPsec
-- Tools: ......Git, VS Code, Wireshark
+- Age: {age}
+- OS: Debian 12 / Linux
+- IDE: VS Code  
 
 ---
 
-## Contacts
+**GitHub**
+- Followers: {gh['followers']}
+- Repos: {gh['repos']}
 
-- Email: ......loghamithra345@gmail.com
-- LinkedIn: ......https://linkedin.com/in/loghamithra240825
-- GitHub: ......https://github.com/{GITHUB_USERNAME}
+**LeetCode**
+- Solved: {lc}
 
----
+_Last updated: {last_updated}_
 
-## Live Stats
-
-- GitHub Followers: ......{gh['followers']}
-- GitHub Following: ......{gh['following']}
-- GitHub Public Repos: ......{gh['repos']}
-- LeetCode Solves: ......{lc}
-- Last Updated: ......{last_updated}
+</td>
+</tr>
+</table>
 """
-    return content
 
 # =====================================
-# MAIN EXECUTION
+# MAIN
 # =====================================
 if __name__ == "__main__":
-    content = generate_readme()
+    generate_ascii_image()
+    readme = generate_readme()
+
     with open("README.md", "w", encoding="utf-8") as f:
-        f.write(content)
-    print("✅ README generated with ASCII art.")
+        f.write(readme)
+
+    print("✅ Colored ASCII profile generated.")
