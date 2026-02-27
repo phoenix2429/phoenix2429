@@ -32,6 +32,6 @@ Live Stats
 GitHub Followers: 0
 GitHub Repos: 18
 GitHub Public Repos: 18
-LeetCode Solved: 184
-Last Updated: 27-02-2026 10:08:01 PM
+LeetCode Solved: N/A
+Last Updated: 27-02-2026 11:03:02 PM
 
