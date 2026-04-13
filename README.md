@@ -29,9 +29,9 @@ Contacts
 💻 https://github.com/phoenix2429
 
 Live Stats
-GitHub Followers: N/A
-GitHub Repos: N/A
-GitHub Public Repos: N/A
+GitHub Followers: 0
+GitHub Repos: 23
+GitHub Public Repos: 23
 LeetCode Solved: 198
-Last Updated: 14-04-2026 03:14:37 AM
+Last Updated: 14-04-2026 04:10:12 AM
 
