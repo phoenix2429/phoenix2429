@@ -30,8 +30,8 @@ Contacts
 
 Live Stats
 GitHub Followers: 0
-GitHub Repos: 24
-GitHub Public Repos: 24
+GitHub Repos: 0
+GitHub Public Repos: 0
 LeetCode Solved: 200
-Last Updated: 03-07-2026 05:37:07 PM
+Last Updated: 03-07-2026 08:37:57 PM
 
