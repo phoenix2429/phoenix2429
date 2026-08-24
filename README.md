@@ -12,7 +12,7 @@
 
 ```bash
 OS: Linux
-Age: 20
+Age: 21
 IDE: Visual Studio Code
 
 Languages.Programming: Python, C, Java, Go
@@ -33,5 +33,5 @@ GitHub Followers: 0
 GitHub Repos: 25
 GitHub Public Repos: 25
 LeetCode Solved: 206
-Last Updated: 24-08-2026 04:47:13 AM
+Last Updated: 24-08-2026 06:34:37 AM
 
